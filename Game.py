@@ -4,7 +4,7 @@ import sys
 import time
 import pyganim
 import random
-
+#jay
 class Player ():
     """implement the character"""
     

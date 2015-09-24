@@ -9,8 +9,7 @@ import random
 import math
 import copy
 from random import randint
-# hi hello hiya
-#change
+
 class Player (pygame.sprite.Sprite):
     """implement the character"""
 

@@ -397,7 +397,7 @@ class Shot(pygame.sprite.Sprite):
 
         self.Vx = self.getVx()
         self.Vy = self.getVy()
-        self.speed = 40
+        self.speed = 10
 
         self.delta_x = 0
         self.delat_y = 0
@@ -445,7 +445,7 @@ class Shot(pygame.sprite.Sprite):
 # checks if distance is too far from the player so that if this is true the object will be removed
     def too_far(self, Hero):
         disty = self.dist_player(Hero)
-        if disty > 1000:
+        if self.x > 990 or self.y > 590:#disty > 1000:
             return True
         else:
             return False
@@ -454,20 +454,26 @@ class Shot(pygame.sprite.Sprite):
 def UpdatePosition(shots, enemies):
     N = len(shots)
     
-    for i in range(N):
-        shots[i].move()
+    for i in range(len(enemies)):
         
-        if shots[i].x > 980 or shots[i].y > 580:
-            shots[i].kill()
         
-        elif enemies.image.get_rect().collidepoint((shots[i].x, shots[i].y)):
-            shos[i].kill()
-            enemies.kill()
-##            screen.blit(enemies.image, (enemies.x, enemies.y))
+        for e in range(N):
+
+
+            if enemies[i].image.get_rect().collidepoint((shots[e].x, shots[e].y)):
+                shots[e].kill()
+                enemies[i].kill()
+
+                screen.blit(enemies[i].image, (enemies[i].x, enemies[i].y))
+            
+            shots[e].move()
         
+            if shots[e].x > 980 or shots[e].y > 580:
+                shots[e].kill()
+        
+
     
-
-
+    
 
             
 def text (string, x, y, size = 16, font='Arial', color=(255, 255, 255)):
@@ -612,21 +618,27 @@ def main():
 
 
 
-        #improve this
         
-        UpdatePosition(shots, enemy1)
         
         for sht in shots:
             if sht.too_far(player) == False:
                 sht.group.draw(screen)
                 sht.dist_player(player)
                 sht.too_far(player)
-
-
+                
+        for enemy in range(num):
+            list_of_enemies[enemy].group.draw(screen)
+            
+        #improve this
+        
+        UpdatePosition(shots, list_of_enemies)
                 
         #part of making sprite get kill
         enemy1.group.draw(screen)
+
         
+
+            
         pygame.display.update()
         pygame.time.Clock().tick(80)
 

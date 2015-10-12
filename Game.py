@@ -9,7 +9,11 @@ import random
 import math
 import copy
 from random import randint
+<<<<<<< HEAD
 
+=======
+# change
+>>>>>>> refs/remotes/origin/master
 class Player (pygame.sprite.Sprite):
     """implement the character"""
 

@@ -600,9 +600,8 @@ def main():
         UpdatePosition(shots, list_of_enemies)
         
         
-        
-#hello
-        
+#  hello      
+#hello  
         for sht in shots:
             if sht.too_far(player) == False:
                 sht.group.draw(screen)

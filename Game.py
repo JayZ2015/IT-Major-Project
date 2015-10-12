@@ -9,8 +9,7 @@ import random
 import math
 import copy
 from random import randint
-# hi hello hiya
-#change
+# hi
 class Player (pygame.sprite.Sprite):
     """implement the character"""
 
@@ -22,12 +21,10 @@ class Player (pygame.sprite.Sprite):
 
         
 ##        https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite
-##        use the link to use pygame.sprite.Sprite for behaviours and death etc and use on pyganim
+##        use the link to use pygame.sprite.Sprite for behaviours and death etc
         
         default_scale = default_scale #all character's size
-
-
-        # make children class and redefine all the varibles(it has priority)
+        
         if stance == "enemy":
             #status for different characters
             self.original_health = 20
@@ -41,8 +38,6 @@ class Player (pygame.sprite.Sprite):
             self.WALKRATE = 4
             self.RUNRATE = 12
 
-            
-
             #part of making sprite get kill
             self.image =  pygame.image.load('Pictures/hero.gif')
             self.image = pygame.transform.scale(self.image, (20,20))
@@ -53,8 +48,6 @@ class Player (pygame.sprite.Sprite):
            
             self.group = pygame.sprite.GroupSingle(self)
             #part of making sprite get kill
-
-            
 
             
             
@@ -152,23 +145,23 @@ class Player (pygame.sprite.Sprite):
                 # player has started running
                 self.running = True
 
-            elif event.key == K_w:
+            elif event.key == K_UP:
                 self.moveUp = True
                 self.moveDown = False
                 if not self.moveLeft and not self.moveRight:
                     # only change the facing to up if the player wasn't moving left/right
                     self.facing = self.UP
-            elif event.key == K_s:
+            elif event.key == K_DOWN:
                 self.moveDown = True
                 self.moveUp = False
                 if not self.moveLeft and not self.moveRight:
                     self.facing = self.DOWN
-            elif event.key == K_a:
+            elif event.key == K_LEFT:
                 self.moveLeft = True
                 self.moveRight = False
                 if not self.moveUp and not self.moveDown:
                     self.facing = self.LEFT
-            elif event.key == K_d:
+            elif event.key == K_RIGHT:
                 self.moveRight = True
                 self.moveLeft = False
                 if not self.moveUp and not self.moveDown:
@@ -179,26 +172,26 @@ class Player (pygame.sprite.Sprite):
                 # player has stopped running
                 self.running = False
 
-            if event.key == K_w:
+            if event.key == K_UP:
                 self.moveUp = False
                 # if the player was moving in a sideways facing before, change the direction the player is facing.
                 if self.moveLeft:
                     self.facing = self.LEFT
                 if self.moveRight:
                     self.facing = self.RIGHT
-            elif event.key == K_s:
+            elif event.key == K_DOWN:
                 self.moveDown = False
                 if self.moveLeft:
                     self.facing = self.LEFT
                 if self.moveRight:
                     self.facing = self.RIGHT
-            elif event.key == K_a:
+            elif event.key == K_LEFT:
                 self.moveLeft = False
                 if self.moveUp:
                     self.facing = self.UP
                 if self.moveDown:
                     self.facing = self.DOWN
-            elif event.key == K_d:
+            elif event.key == K_RIGHT:
                 self.moveRight = False
                 if self.moveUp:
                     self.facing = self.UP
@@ -288,14 +281,14 @@ class Player (pygame.sprite.Sprite):
             else:
                 self.y += 1
                 
-##    def random_move(self, screen = pygame.display.set_mode((1000, 600)) ):
-##        rand_x = random.randint(-20,20)
-##        rand_y = random.randint(-20,20)
-##        
-##        self.rect.top += rand_y
-##        self.rect.left += rand_x
-##        
-##        screen.blit(self.image, (self.rect.left, self.rect.top))
+    def random_move(self, screen = pygame.display.set_mode((1000, 600)) ):
+        rand_x = random.randint(-20,20)
+        rand_y = random.randint(-20,20)
+        
+        self.rect.top += rand_y
+        self.rect.left += rand_x
+        
+        screen.blit(self.image, (self.rect.left, self.rect.top))
         
 
         
@@ -306,7 +299,7 @@ class Player (pygame.sprite.Sprite):
 
 
 
-class Obstacle(pygame.sprite.Sprite):
+class Map(pygame.sprite.Sprite):
 
     def __init__(self, default_scale = (25,25)):
 
@@ -331,12 +324,10 @@ class Obstacle(pygame.sprite.Sprite):
             pygame.display.set_mode((WIDTH, HEIGHT)).blit(self.obstacle, (x, y))
 
 
-class Pet(pygame.sprite.Sprite):
+class Pet():
  
     def __init__(self, player):
 
-        pygame.sprite.Sprite.__init__(self)
-        
         self.level = 0
         self.expereience = 0
         self.full_experience = 0
@@ -397,11 +388,7 @@ class Shot(pygame.sprite.Sprite):
 
         self.Vx = self.getVx()
         self.Vy = self.getVy()
-        self.speed = 10
-
-        self.delta_x = 0
-        self.delat_y = 0
-        #need to find the change of distance from inital !!
+        self.speed = 40
         
 # works out velocity in x direction
     def getVx(self):
@@ -445,7 +432,7 @@ class Shot(pygame.sprite.Sprite):
 # checks if distance is too far from the player so that if this is true the object will be removed
     def too_far(self, Hero):
         disty = self.dist_player(Hero)
-        if self.x > 990 or self.y > 590:#disty > 1000:
+        if disty > 1000:
             return True
         else:
             return False
@@ -454,26 +441,20 @@ class Shot(pygame.sprite.Sprite):
 def UpdatePosition(shots, enemies):
     N = len(shots)
     
-    for i in range(len(enemies)):
+    for i in range(N):
+        shots[i].move()
         
+        if shots[i].x > 980 or shots[i].y > 580:
+            shots[i].kill()
         
-        for e in range(N):
-
-
-            if enemies[i].image.get_rect().collidepoint((shots[e].x, shots[e].y)):
-                shots[e].kill()
-                enemies[i].kill()
-
-                screen.blit(enemies[i].image, (enemies[i].x, enemies[i].y))
-            
-            shots[e].move()
+##        elif enemies[i].image.get_rect().collidepoint((shots[i].x, shots[i].y)):
+##            shos[i].kill()
+##            enemies[i].kill()
+##            screen.blit(list_of_enemies[i].image, (list_of_enemies[i].x, list_of_enemies[i].y))
         
-            if shots[e].x > 980 or shots[e].y > 580:
-                shots[e].kill()
-        
-
     
-    
+
+
 
             
 def text (string, x, y, size = 16, font='Arial', color=(255, 255, 255)):
@@ -556,89 +537,76 @@ def main():
                     sys.exit()
                 elif event.key == pygame.K_c:
                     shots.append(Shot(player))
-                    
                 #part of making sprite get kill
                 if event.key == pygame.K_g:
                     enemy1.kill()
-                #get the sprite appear 
-                if event.key == pygame.K_k:
-                    enemy1.add(enemy1.group)
                     
             player.direction(event)
         
         player.movement(Width, Height)
 
 
-##        #care about the small range of player and look at the answer to the test code of the ball physics 
-##        for i in range(num):
-##            
-##            if list_of_enemies[i].x > player.x:
-##                list_of_enemies[i].x -= 2
-##                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
-##                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
-##                
-##            elif list_of_enemies[i].x > player.x:
-##                list_of_enemies[i].x += random.choice([2, -2, 3, -3])
-##                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
-##                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
-##                
-##            if list_of_enemies[i].x < player.x:
-##                list_of_enemies[i].x += 2
-##                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
-##                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
-##                
-##            elif list_of_enemies[i].x < player.x:
-##                list_of_enemies[i].x -= random.choice([2, -2, 3, -3])
-##                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
-##                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
-##                
-##            if list_of_enemies[i].y > player.y:
-##                list_of_enemies[i].y -= 2
-##                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
-##                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
-##                
-##            elif list_of_enemies[i].y > player.y:
-##                list_of_enemies[i].y += random.choice([2, -2, 3, -3])
-##                list_of_enemies[i].image = pygame.image.load(list_of_enemies[i].image).convert_alpha()
-##                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
-##                
-##            if list_of_enemies[i].y < player.y:
-##                list_of_enemies[i].y += 2
-##                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
-##                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
-##            elif list_of_enemies[i].y < player.y:
-##                list_of_enemies[i].y -= random.choice([2, -2, 3, -3])
-##                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
-##                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
-##                  
-##
-##            screen.blit(list_of_enemies[i].image, (list_of_enemies[i].x, list_of_enemies[i].y))
+        #care about the small range of player and look at the answer to the test code of the ball physics 
+        for i in range(num):
+            
+            if list_of_enemies[i].x > player.x:
+                list_of_enemies[i].x -= 2
+                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
+                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
+                
+            elif list_of_enemies[i].x > player.x:
+                list_of_enemies[i].x += random.choice([2, -2, 3, -3])
+                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
+                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
+                
+            if list_of_enemies[i].x < player.x:
+                list_of_enemies[i].x += 2
+                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
+                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
+                
+            elif list_of_enemies[i].x < player.x:
+                list_of_enemies[i].x -= random.choice([2, -2, 3, -3])
+                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
+                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
+                
+            if list_of_enemies[i].y > player.y:
+                list_of_enemies[i].y -= 2
+                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
+                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
+                
+            elif list_of_enemies[i].y > player.y:
+                list_of_enemies[i].y += random.choice([2, -2, 3, -3])
+                list_of_enemies[i].image = pygame.image.load(list_of_enemies[i].image).convert_alpha()
+                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
+                
+            if list_of_enemies[i].y < player.y:
+                list_of_enemies[i].y += 2
+                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
+                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
+            elif list_of_enemies[i].y < player.y:
+                list_of_enemies[i].y -= random.choice([2, -2, 3, -3])
+                list_of_enemies[i].image = pygame.image.load('Pictures/hero.gif').convert_alpha()
+                list_of_enemies[i].image = pygame.transform.scale(list_of_enemies[i].image,(25,25))
+                  
+
+            screen.blit(list_of_enemies[i].image, (list_of_enemies[i].x, list_of_enemies[i].y))
         
         pygame.time.delay(50)
-
-
-
         
+        UpdatePosition(shots, list_of_enemies)
+        
+        
+        
+#hello
         
         for sht in shots:
             if sht.too_far(player) == False:
                 sht.group.draw(screen)
                 sht.dist_player(player)
                 sht.too_far(player)
-                
-        for enemy in range(num):
-            list_of_enemies[enemy].group.draw(screen)
-            
-        #improve this
-        
-        UpdatePosition(shots, list_of_enemies)
-                
         #part of making sprite get kill
         enemy1.group.draw(screen)
-
         
-
-            
         pygame.display.update()
         pygame.time.Clock().tick(80)
 

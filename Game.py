@@ -9,11 +9,7 @@ import random
 import math
 import copy
 from random import randint
-<<<<<<< HEAD
 
-=======
-# change
->>>>>>> refs/remotes/origin/master
 class Player (pygame.sprite.Sprite):
     """implement the character"""
 
@@ -21,9 +17,7 @@ class Player (pygame.sprite.Sprite):
 
         pygame.sprite.Sprite.__init__(self)
 
-#a change
 
-        
 ##        https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite
 ##        use the link to use pygame.sprite.Sprite for behaviours and death etc and use on pyganim
         
